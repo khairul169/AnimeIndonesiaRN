@@ -136,12 +136,20 @@ class Home extends Component {
         item.title.indexOf('Subtitle') || item.title.length,
       );
       return (
-        <CardItem
-          key={index}
-          image={item.image}
-          title={title}
-          style={{margin: 8, marginHorizontal: 16}}
-        />
+        <TouchableOpacity
+          onPress={() =>
+            this.props.navigation.navigate('ViewRelease', {
+              title,
+              id: item.id,
+            })
+          }>
+          <CardItem
+            key={index}
+            image={item.image}
+            title={title}
+            style={{margin: 8, marginHorizontal: 16}}
+          />
+        </TouchableOpacity>
       );
     }
   }
