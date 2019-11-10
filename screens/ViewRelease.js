@@ -76,11 +76,35 @@ export default class ViewRelease extends Component {
           source={{uri: image}}
         />
 
-        <View style={{padding: 16}}>
+        <View style={{padding: 8}}>
           {uploads.map((item, index) => {
+            if (!item.links || !item.links.length) {
+              return null;
+            }
+
             return (
-              <View key={index}>
-                <Text style={{marginBottom: 8}}>{item.name}</Text>
+              <View
+                key={index}
+                style={{
+                  backgroundColor: '#fff',
+                  elevation: 3,
+                  borderRadius: 2,
+                  padding: 16,
+                  marginBottom: 8,
+                }}>
+                <Text
+                  style={{
+                    borderBottomWidth: 1,
+                    borderColor: '#eee',
+                    paddingBottom: 12,
+                    fontSize: 12,
+                    lineHeight: 18,
+                    color: '#686868',
+                    marginBottom: 4,
+                  }}>
+                  {item.name}
+                </Text>
+
                 <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
                   {item.links.map((link, id) => {
                     return (
@@ -89,13 +113,22 @@ export default class ViewRelease extends Component {
                         onPress={() => Linking.openURL(link.download)}>
                         <View
                           style={{
-                            backgroundColor: '#303F9F',
+                            backgroundColor: '#ddd',
                             borderRadius: 3,
-                            padding: 8,
+                            paddingHorizontal: 16,
+                            height: 32,
+                            borderRadius: 16,
                             marginRight: 8,
-                            marginBottom: 8,
+                            marginTop: 8,
+                            justifyContent: 'center',
                           }}>
-                          <Text style={{color: '#fff'}}>{link.name}</Text>
+                          <Text
+                            style={{
+                              color: '#333',
+                              fontSize: 12,
+                            }}>
+                            {link.name}
+                          </Text>
                         </View>
                       </TouchableOpacity>
                     );

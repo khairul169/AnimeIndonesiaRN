@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, PureComponent} from 'react';
 import {
   Text,
   StyleSheet,
@@ -9,14 +9,19 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
-const CardItem = ({style, title, image}) => (
-  <View style={[styles.itemCard, style]}>
-    {image ? (
-      <Image style={styles.itemCardImage} source={{uri: image}} />
-    ) : null}
-    <Text style={styles.itemCardTitle}>{title}</Text>
-  </View>
-);
+class CardItem extends PureComponent {
+  render() {
+    const {style, title, image} = this.props;
+    return (
+      <View style={[styles.itemCard, style]}>
+        {image ? (
+          <Image style={styles.itemCardImage} source={{uri: image}} />
+        ) : null}
+        <Text style={styles.itemCardTitle}>{title}</Text>
+      </View>
+    );
+  }
+}
 
 class Home extends Component {
   static navigationOptions = {
@@ -118,7 +123,7 @@ class Home extends Component {
             keyExtractor={(item, index) => index.toString()}
             style={styles.featured}
             showsHorizontalScrollIndicator={false}
-            decelerationRate={0}
+            decelerationRate={0.6}
             snapToInterval={256}
             snapToAlignment="center"
           />
@@ -147,7 +152,12 @@ class Home extends Component {
             key={index}
             image={item.image}
             title={title}
-            style={{margin: 8, marginHorizontal: 16}}
+            style={{
+              margin: 8,
+              marginHorizontal: 16,
+              borderColor: '#eee',
+              borderBottomWidth: 1,
+            }}
           />
         </TouchableOpacity>
       );
@@ -189,7 +199,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   sectionTitle: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#686868',
     marginBottom: 8,
     marginHorizontal: 16,
@@ -205,7 +215,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   itemCardTitle: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#111',
     marginVertical: 12,
   },
