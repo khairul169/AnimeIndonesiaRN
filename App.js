@@ -31,6 +31,10 @@ export default class App extends Component {
   }
 
   fetchReleaseList = async () => {
+    if (this.state.isLoading) {
+      return;
+    }
+
     try {
       this.setState({isLoading: true});
       const response = await fetch('http://awsubs-api.khairul.my.id/');
@@ -42,15 +46,21 @@ export default class App extends Component {
   };
 
   fetchMoreRelease = async () => {
+    if (this.state.isLoading) {
+      return;
+    }
+
     try {
       this.setState({isLoading: true});
+
+      const page = this.state.currentPage + 1;
       const response = await fetch(
-        'http://awsubs-api.khairul.my.id/page/' + this.state.currentPage + 1,
+        'http://awsubs-api.khairul.my.id/page/' + page,
       );
       const data = await response.json();
       this.setState({
         releaseList: [...this.state.releaseList, ...data.result],
-        currentPage: this.state.currentPage + 1,
+        currentPage: page,
         isLoading: false,
       });
     } catch (error) {
@@ -147,6 +157,7 @@ export default class App extends Component {
           onEndReached={this.fetchMoreRelease}
           refreshing={this.state.isLoading}
           onRefresh={this.refreshItems.bind(this)}
+          onEndReachedThreshold={0.1}
         />
       </View>
     );
