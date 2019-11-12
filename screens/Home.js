@@ -8,33 +8,46 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
+import API from '../API';
+
+const Header = () => {
+  return (
+    <View style={styles.header}>
+      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+      <Text style={styles.headerTitle}>Anime Indonesia</Text>
+    </View>
+  );
+};
 
 class CardItem extends PureComponent {
   render() {
-    const {style, title, image} = this.props;
+    const {style, title, image, height} = this.props;
+    const imgStyle = [styles.itemCardImage, {height: height || 150}];
     return (
       <View style={[styles.itemCard, style]}>
-        {image ? (
-          <Image style={styles.itemCardImage} source={{uri: image}} />
-        ) : null}
-        <Text style={styles.itemCardTitle}>{title}</Text>
+        {image ? <Image style={imgStyle} source={{uri: image}} /> : null}
+        <Text style={styles.itemCardTitle} numberOfLines={1}>
+          {title}
+        </Text>
       </View>
     );
   }
 }
 
 class Home extends Component {
-  static navigationOptions = {
-    header: null,
-  };
+  static navigationOptions = props => ({
+    header: <Header {...props} />,
+  });
 
   constructor(props) {
     super(props);
 
     this.state = {
+      isLoading: false,
+      featured: [],
       releaseList: [],
       currentPage: 1,
-      isLoading: false,
+      ongoing: [],
     };
   }
 
@@ -43,14 +56,15 @@ class Home extends Component {
       return;
     }
 
-    try {
-      this.setState({isLoading: true});
-      const response = await fetch('http://awsubs-api.khairul.my.id/');
-      const data = await response.json();
-      this.setState({releaseList: data.result, isLoading: false});
-    } catch (error) {
-      console.log(error);
-    }
+    this.setState({isLoading: true});
+
+    const result = await API.getLatest();
+    this.setState({
+      featured: result.featured,
+      releaseList: result.latest,
+      ongoing: result.ongoing,
+      isLoading: false,
+    });
   };
 
   fetchMoreRelease = async () => {
@@ -58,22 +72,15 @@ class Home extends Component {
       return;
     }
 
-    try {
-      this.setState({isLoading: true});
+    this.setState({isLoading: true});
 
-      const page = this.state.currentPage + 1;
-      const response = await fetch(
-        'http://awsubs-api.khairul.my.id/page/' + page,
-      );
-      const data = await response.json();
-      this.setState({
-        releaseList: [...this.state.releaseList, ...data.result],
-        currentPage: page,
-        isLoading: false,
-      });
-    } catch (error) {
-      console.log(error);
-    }
+    const page = this.state.currentPage + 1;
+    const result = await API.getLatest(page);
+    this.setState({
+      releaseList: [...this.state.releaseList, ...result.latest],
+      currentPage: page,
+      isLoading: false,
+    });
   };
 
   refreshItems() {
@@ -82,21 +89,22 @@ class Home extends Component {
   }
 
   renderAnimeList({item, index}) {
-    let title = item.title.substr(
-      0,
-      item.title.indexOf('Subtitle') || item.title.length,
-    );
-    title = title.length > 26 ? title.substr(0, 26) + '..' : title;
-
     const style = [
       styles.featuredItem,
       {
-        marginLeft: !index ? 16 : 8,
-        marginRight: index === this.state.releaseList.length - 1 ? 16 : 8,
+        marginLeft: !index ? 16 : 0,
+        marginRight: 16,
       },
     ];
 
-    return <CardItem image={item.image} title={title} style={style} />;
+    return (
+      <CardItem
+        image={item.image}
+        title={item.name}
+        style={style}
+        height={200}
+      />
+    );
   }
 
   componentDidMount() {
@@ -106,8 +114,16 @@ class Home extends Component {
   renderSections({item, index}) {
     if (index === 0) {
       return (
-        <View style={styles.header}>
-          <Text style={styles.headerTitle}>Anime Indonesia</Text>
+        <View>
+          <Text style={styles.sectionTitle}>Featured Series</Text>
+          <FlatList
+            horizontal
+            data={this.state.featured}
+            renderItem={this.renderAnimeList.bind(this)}
+            keyExtractor={(obj, id) => id.toString()}
+            style={styles.featured}
+            showsHorizontalScrollIndicator={false}
+          />
         </View>
       );
     }
@@ -115,17 +131,14 @@ class Home extends Component {
     if (index === 1) {
       return (
         <View>
-          <Text style={styles.sectionTitle}>Featured Series</Text>
+          <Text style={styles.sectionTitle}>Ongoing Series</Text>
           <FlatList
             horizontal
-            data={this.state.releaseList}
+            data={this.state.ongoing}
             renderItem={this.renderAnimeList.bind(this)}
-            keyExtractor={(item, index) => index.toString()}
+            keyExtractor={(obj, id) => id.toString()}
             style={styles.featured}
             showsHorizontalScrollIndicator={false}
-            decelerationRate={0.6}
-            snapToInterval={256}
-            snapToAlignment="center"
           />
         </View>
       );
@@ -140,6 +153,12 @@ class Home extends Component {
         0,
         item.title.indexOf('Subtitle') || item.title.length,
       );
+      const cardStyle = {
+        margin: 8,
+        marginHorizontal: 16,
+        borderColor: '#eee',
+        borderBottomWidth: 1,
+      };
       return (
         <TouchableOpacity
           onPress={() =>
@@ -152,12 +171,7 @@ class Home extends Component {
             key={index}
             image={item.image}
             title={title}
-            style={{
-              margin: 8,
-              marginHorizontal: 16,
-              borderColor: '#eee',
-              borderBottomWidth: 1,
-            }}
+            style={cardStyle}
           />
         </TouchableOpacity>
       );
@@ -169,7 +183,6 @@ class Home extends Component {
 
     return (
       <View style={styles.container}>
-        <StatusBar barStyle="dark-content" backgroundColor="#fff" />
         <FlatList
           style={styles.container}
           data={[...sections, ...this.state.releaseList]}
@@ -178,7 +191,7 @@ class Home extends Component {
           onEndReached={this.fetchMoreRelease}
           refreshing={this.state.isLoading}
           onRefresh={this.refreshItems.bind(this)}
-          onEndReachedThreshold={0.1}
+          onEndReachedThreshold={0.5}
         />
       </View>
     );
@@ -216,7 +229,7 @@ const styles = StyleSheet.create({
   },
   itemCardTitle: {
     fontSize: 14,
-    color: '#111',
+    color: '#333',
     marginVertical: 12,
   },
   featured: {
@@ -224,7 +237,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   featuredItem: {
-    width: 256,
+    width: 128,
     margin: 8,
   },
 });

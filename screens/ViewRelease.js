@@ -10,10 +10,11 @@ import {
   RefreshControl,
   ActivityIndicator,
 } from 'react-native';
+import API from '../API';
 
 export default class ViewRelease extends Component {
   static navigationOptions = ({navigation}) => ({
-    title: navigation.getParam('title', 'Lihat Rilisan'),
+    title: navigation.getParam('title', 'View Release'),
   });
 
   constructor(props) {
@@ -31,16 +32,9 @@ export default class ViewRelease extends Component {
       return;
     }
 
-    try {
-      this.setState({isLoading: true});
-      const response = await fetch(
-        'http://awsubs-api.khairul.my.id/release/' + this.releaseId,
-      );
-      const data = await response.json();
-      this.setState({data: data.result, isLoading: false});
-    } catch (error) {
-      console.log(error);
-    }
+    this.setState({isLoading: true});
+    const data = await API.getReleaseById(this.releaseId);
+    this.setState({data, isLoading: false});
   };
 
   refresh = () => {
@@ -53,9 +47,14 @@ export default class ViewRelease extends Component {
 
   render() {
     if (!this.state.data) {
+      const loadingStyle = {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+      };
       return (
-        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-          <ActivityIndicator />
+        <View style={loadingStyle}>
+          <ActivityIndicator size="large" />
         </View>
       );
     }
@@ -63,82 +62,46 @@ export default class ViewRelease extends Component {
     const {image, uploads} = this.state.data;
 
     return (
-      <ScrollView
-        style={styles.container}
-        refreshControl={
-          <RefreshControl
-            refreshing={this.state.isLoading}
-            onRefresh={this.refresh}
-          />
-        }>
-        <Image
-          style={{height: 256, resizeMode: 'cover'}}
-          source={{uri: image}}
-        />
+      <View style={styles.container}>
+        <ScrollView
+          style={styles.container}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.isLoading}
+              onRefresh={this.refresh}
+            />
+          }>
+          <Image style={styles.previewImage} source={{uri: image}} />
 
-        <View style={{padding: 8}}>
-          {uploads.map((item, index) => {
-            if (!item.links || !item.links.length) {
-              return null;
-            }
+          <View style={styles.content}>
+            {uploads.map((item, index) => {
+              if (!item.links || !item.links.length) {
+                return null;
+              }
 
-            return (
-              <View
-                key={index}
-                style={{
-                  backgroundColor: '#fff',
-                  elevation: 3,
-                  borderRadius: 2,
-                  padding: 16,
-                  marginBottom: 8,
-                }}>
-                <Text
-                  style={{
-                    borderBottomWidth: 1,
-                    borderColor: '#eee',
-                    paddingBottom: 12,
-                    fontSize: 12,
-                    lineHeight: 18,
-                    color: '#686868',
-                    marginBottom: 4,
-                  }}>
-                  {item.name}
-                </Text>
+              return (
+                <View key={index} style={styles.linkContainer}>
+                  <Text style={styles.linkName}>{item.name}</Text>
 
-                <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-                  {item.links.map((link, id) => {
-                    return (
-                      <TouchableOpacity
-                        key={id}
-                        onPress={() => Linking.openURL(link.download)}>
-                        <View
-                          style={{
-                            backgroundColor: '#ddd',
-                            borderRadius: 3,
-                            paddingHorizontal: 16,
-                            height: 32,
-                            borderRadius: 16,
-                            marginRight: 8,
-                            marginTop: 8,
-                            justifyContent: 'center',
-                          }}>
-                          <Text
-                            style={{
-                              color: '#333',
-                              fontSize: 12,
-                            }}>
-                            {link.name}
-                          </Text>
-                        </View>
-                      </TouchableOpacity>
-                    );
-                  })}
+                  <View style={styles.links}>
+                    {item.links.map((link, id) => {
+                      return (
+                        <TouchableOpacity
+                          key={id}
+                          onPress={() => Linking.openURL(link.download)}>
+                          <View style={styles.linkButton}>
+                            <Text style={styles.linkProvider}>{link.name}</Text>
+                          </View>
+                        </TouchableOpacity>
+                      );
+                    })}
+                  </View>
                 </View>
-              </View>
-            );
-          })}
-        </View>
-      </ScrollView>
+              );
+            })}
+          </View>
+        </ScrollView>
+      </View>
     );
   }
 }
@@ -146,5 +109,45 @@ export default class ViewRelease extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  previewImage: {
+    height: 256,
+    resizeMode: 'cover',
+  },
+  content: {
+    padding: 8,
+  },
+  linkContainer: {
+    backgroundColor: '#fff',
+    elevation: 3,
+    borderRadius: 2,
+    padding: 16,
+    marginBottom: 8,
+  },
+  links: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  linkName: {
+    borderBottomWidth: 1,
+    borderColor: '#eee',
+    paddingBottom: 12,
+    fontSize: 12,
+    lineHeight: 18,
+    color: '#686868',
+    marginBottom: 4,
+  },
+  linkButton: {
+    backgroundColor: '#ddd',
+    paddingHorizontal: 16,
+    height: 32,
+    borderRadius: 16,
+    marginRight: 8,
+    marginTop: 8,
+    justifyContent: 'center',
+  },
+  linkProvider: {
+    color: '#333',
+    fontSize: 12,
   },
 });
