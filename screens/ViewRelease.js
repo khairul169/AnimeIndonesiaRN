@@ -59,6 +59,9 @@ const getReleaseType = name => {
 export default class ViewRelease extends Component {
   static navigationOptions = ({navigation}) => ({
     title: navigation.getParam('title', 'View Release'),
+    headerTitleStyle: {
+      fontSize: 16,
+    },
   });
 
   constructor(props) {
