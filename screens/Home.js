@@ -7,6 +7,7 @@ import {
   FlatList,
   Image,
   TouchableOpacity,
+  Animated,
 } from 'react-native';
 import API from '../API';
 
@@ -15,7 +16,57 @@ const Header = () => {
     <View style={styles.header}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
       <Text style={styles.headerTitle}>Anime Indonesia</Text>
+      <View
+        style={{
+          backgroundColor: '#eee',
+          borderRadius: 3,
+          padding: 16,
+          paddingVertical: 12,
+          marginTop: 12,
+        }}>
+        <Text>Cari anime...</Text>
+      </View>
     </View>
+  );
+};
+
+const ScrollToTop = ({yScroll, flatList}) => {
+  const bottom = yScroll.interpolate({
+    inputRange: [500, 600],
+    outputRange: [-50, 32],
+    extrapolate: 'clamp',
+  });
+  const opacity = yScroll.interpolate({
+    inputRange: [560, 600],
+    outputRange: [0.0, 1.0],
+    extrapolate: 'clamp',
+  });
+  return (
+    <Animated.View
+      style={{
+        position: 'absolute',
+        bottom,
+        right: 32,
+        backgroundColor: '#fff',
+        elevation: 3,
+        width: 64,
+        height: 64,
+        borderRadius: 32,
+        zIndex: 99,
+        opacity,
+      }}>
+      <TouchableOpacity
+        onPress={() => {
+          flatList && flatList.scrollToIndex({animated: true, index: 0.0});
+        }}
+        style={{
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: '100%',
+        }}>
+        <Text>TOP</Text>
+      </TouchableOpacity>
+    </Animated.View>
   );
 };
 
@@ -36,18 +87,20 @@ class CardItem extends PureComponent {
 
 class Home extends Component {
   static navigationOptions = props => ({
-    header: <Header {...props} />,
+    header: null,
   });
 
   constructor(props) {
     super(props);
 
+    this.flatList = null;
     this.state = {
       isLoading: false,
       featured: [],
       releaseList: [],
       currentPage: 1,
       ongoing: [],
+      yScroll: new Animated.Value(0),
     };
   }
 
@@ -115,7 +168,9 @@ class Home extends Component {
     if (index === 0) {
       return (
         <View>
-          <Text style={styles.sectionTitle}>Featured Series</Text>
+          <Text style={[styles.sectionTitle, {marginTop: 16}]}>
+            Featured Series
+          </Text>
           <FlatList
             horizontal
             data={this.state.featured}
@@ -180,10 +235,24 @@ class Home extends Component {
 
   render() {
     const sections = [0, 1, 2];
+    const onScrollEvent = Animated.event([
+      {
+        nativeEvent: {
+          contentOffset: {
+            y: this.state.yScroll,
+          },
+        },
+      },
+    ]);
 
     return (
       <View style={styles.container}>
+        <Header {...this.props} />
+        <ScrollToTop yScroll={this.state.yScroll} flatList={this.flatList} />
         <FlatList
+          ref={ref => {
+            this.flatList = ref;
+          }}
           style={styles.container}
           data={[...sections, ...this.state.releaseList]}
           renderItem={this.renderSections.bind(this)}
@@ -192,6 +261,8 @@ class Home extends Component {
           refreshing={this.state.isLoading}
           onRefresh={this.refreshItems.bind(this)}
           onEndReachedThreshold={0.5}
+          onScroll={onScrollEvent}
+          scrollEventThrottle={1}
         />
       </View>
     );

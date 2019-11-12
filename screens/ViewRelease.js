@@ -41,7 +41,7 @@ const getReleaseType = name => {
 
   // ext
   if (name.includes('.mkv')) {
-    ext = 'MKV';
+    ext = 'Mkv';
   }
   if (name.includes('.mp4')) {
     ext = 'MP4';
@@ -164,33 +164,37 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 16,
+    lineHeight: 28,
     color: '#333',
     padding: 16,
     borderColor: '#eee',
     borderBottomWidth: 1,
   },
   linkContainer: {
-    padding: 16,
+    padding: 0,
     paddingTop: 0,
   },
   linkCard: {
     backgroundColor: '#fff',
-    marginTop: 16,
     marginBottom: 8,
   },
   linkTitle: {
-    backgroundColor: '#333',
-    color: '#fff',
-    borderRadius: 3,
+    backgroundColor: '#eee',
+    color: '#333',
+    fontWeight: 'bold',
+    fontSize: 14,
+    borderColor: '#ddd',
+    borderBottomWidth: 1,
     padding: 16,
     paddingVertical: 12,
-    fontSize: 14,
     lineHeight: 18,
-    marginBottom: 8,
   },
   links: {
     flexDirection: 'row',
     flexWrap: 'wrap',
+    padding: 16,
+    paddingTop: 8,
+    paddingHorizontal: 12,
   },
   linkButton: {
     backgroundColor: '#4CAF50',
