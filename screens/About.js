@@ -1,5 +1,13 @@
 import React, {Component} from 'react';
-import {Text, StyleSheet, View, TouchableOpacity, Linking} from 'react-native';
+import {
+  Text,
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  Linking,
+  Image,
+  ScrollView,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 const Button = ({onPress, title, style, icon}) => (
@@ -16,15 +24,25 @@ export default class About extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={styles.content}>
+        <Image
+          source={require('../assets/app_icon.png')}
+          style={styles.appIcon}
+        />
         <Text style={styles.appName}>Anime Indonesia</Text>
         <Text style={styles.appDesc}>
           Proyek ini bersumberkan terbuka dan dapat dikembangkan oleh siapa
           saja.
-          {'\n\n'}Disclaimer:{'\n'}Tujuan awal dari proyek ini adalah untuk
-          mencoba scrapping sebuah website fansub anime dan tidak bermaksud
-          untuk mendapatkan keuntungan.
         </Text>
+        <View style={styles.disclaimer}>
+          <Text style={styles.disclaimerText}>
+            Disclaimer:{'\n'}Tujuan awal dari proyek ini adalah untuk mencoba
+            scrapping sebuah website fansub anime dan tidak bermaksud untuk
+            mendapatkan keuntungan.
+          </Text>
+        </View>
         <Button
           style={{marginTop: 32}}
           icon="logo-github"
@@ -33,7 +51,7 @@ export default class About extends Component {
             Linking.openURL('https://github.com/khairul169/AnimeIndonesiaRN')
           }
         />
-      </View>
+      </ScrollView>
     );
   }
 }
@@ -41,14 +59,21 @@ export default class About extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  content: {
     alignItems: 'center',
-    justifyContent: 'center',
     padding: 16,
+  },
+  appIcon: {
+    width: 128,
+    height: 128,
+    marginTop: 32,
   },
   appName: {
     fontSize: 20,
     fontWeight: 'bold',
     color: '#333',
+    marginTop: 16,
   },
   appDesc: {
     fontSize: 14,
@@ -56,6 +81,18 @@ const styles = StyleSheet.create({
     marginTop: 12,
     textAlign: 'center',
     lineHeight: 20,
+  },
+  disclaimer: {
+    backgroundColor: '#FFF8E1',
+    padding: 16,
+    borderRadius: 5,
+    marginTop: 16,
+  },
+  disclaimerText: {
+    fontSize: 12,
+    color: '#686868',
+    lineHeight: 18,
+    textAlign: 'center',
   },
   button: {
     backgroundColor: '#43A047',
