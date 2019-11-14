@@ -263,6 +263,7 @@ class Home extends Component {
           onEndReachedThreshold={0.5}
           onScroll={onScrollEvent}
           scrollEventThrottle={1}
+          showsVerticalScrollIndicator={false}
         />
       </View>
     );
