@@ -35,8 +35,24 @@ const getSeriesById = async id => {
   return null;
 };
 
+const getAnimeList = async (page, query) => {
+  try {
+    const response = await fetch(
+      BaseURL +
+        (query ? `search/${query}/` : 'anime/') +
+        (page ? `page/${page}` : ''),
+    );
+    const data = await response.json();
+    return data.result;
+  } catch (error) {
+    console.log(error);
+  }
+  return null;
+};
+
 export default {
   getLatest,
   getReleaseById,
   getSeriesById,
+  getAnimeList,
 };

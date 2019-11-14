@@ -17,16 +17,7 @@ const Header = () => {
     <View style={styles.header}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
       <Text style={styles.headerTitle}>Anime Indonesia</Text>
-      <View
-        style={{
-          backgroundColor: '#eee',
-          borderRadius: 3,
-          padding: 16,
-          paddingVertical: 12,
-          marginTop: 12,
-        }}>
-        <Text>Cari anime...</Text>
-      </View>
+      <Text style={styles.headerSubtitle}>Unduh Anime Subtitle Indonesia</Text>
     </View>
   );
 };
@@ -290,6 +281,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: '#111',
     marginTop: 16,
+  },
+  headerSubtitle: {
+    fontSize: 12,
+    color: '#333',
+    marginTop: 6,
   },
   sectionTitle: {
     fontSize: 14,
