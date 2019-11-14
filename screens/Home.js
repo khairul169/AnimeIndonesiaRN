@@ -88,7 +88,7 @@ class CardItem extends PureComponent {
 
 class Home extends Component {
   static navigationOptions = props => ({
-    header: null,
+    title: 'Beranda',
   });
 
   constructor(props) {
