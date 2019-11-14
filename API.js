@@ -1,6 +1,6 @@
 //const BaseURL = 'https://awsubs-api.khairul.my.id/';
-const BaseURL = 'http://192.168.43.48:8080/';
-//const BaseURL = 'http://localhost:8080/';
+//const BaseURL = 'http://192.168.43.48:8080/';
+const BaseURL = 'http://192.168.57.1:8080/';
 
 const getLatest = async page => {
   try {

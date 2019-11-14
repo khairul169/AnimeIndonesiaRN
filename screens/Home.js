@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   Animated,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 import API from '../API';
 
 const Header = () => {
@@ -49,9 +50,9 @@ const ScrollToTop = ({yScroll, flatList}) => {
         right: 32,
         backgroundColor: '#fff',
         elevation: 3,
-        width: 64,
-        height: 64,
-        borderRadius: 32,
+        width: 48,
+        height: 48,
+        borderRadius: 24,
         zIndex: 99,
         opacity,
       }}>
@@ -64,7 +65,7 @@ const ScrollToTop = ({yScroll, flatList}) => {
           justifyContent: 'center',
           height: '100%',
         }}>
-        <Text>TOP</Text>
+        <Icon name="md-arrow-round-up" style={{fontSize: 20, color: '#333'}} />
       </TouchableOpacity>
     </Animated.View>
   );
