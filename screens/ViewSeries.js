@@ -9,8 +9,8 @@ import {
   ActivityIndicator,
   TouchableOpacity,
 } from 'react-native';
-import API from '../API';
 import Icon from 'react-native-vector-icons/Ionicons';
+import API from '../API';
 
 const capitalize = s => s && s[0].toUpperCase() + s.slice(1);
 

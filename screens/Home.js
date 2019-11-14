@@ -78,9 +78,9 @@ class CardItem extends PureComponent {
 }
 
 class Home extends Component {
-  static navigationOptions = props => ({
+  static navigationOptions = {
     title: 'Beranda',
-  });
+  };
 
   constructor(props) {
     super(props);

@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 import Home from './Home';
 import AnimeList from './AnimeList';
+import About from './About';
 import ViewRelease from './ViewRelease';
 import ViewSeries from './ViewSeries';
 
@@ -13,6 +14,7 @@ const HomeTabs = createBottomTabNavigator(
   {
     Home,
     AnimeList,
+    About,
   },
   {
     defaultNavigationOptions: ({navigation}) => ({
@@ -26,6 +28,9 @@ const HomeTabs = createBottomTabNavigator(
             break;
           case 'AnimeList':
             iconName = 'md-list';
+            break;
+          case 'About':
+            iconName = 'ios-information-circle-outline';
             break;
         }
 

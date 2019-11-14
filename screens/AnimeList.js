@@ -53,9 +53,9 @@ const Header = ({searchQuery, onSearchChange, onSearch, onClear}) => {
 };
 
 export default class AnimeList extends Component {
-  static navigationOptions = props => ({
+  static navigationOptions = {
     title: 'Daftar Anime',
-  });
+  };
 
   constructor(props) {
     super(props);
