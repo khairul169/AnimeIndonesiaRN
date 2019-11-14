@@ -7,6 +7,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Home from './Home';
 import AnimeList from './AnimeList';
 import ViewRelease from './ViewRelease';
+import ViewSeries from './ViewSeries';
 
 const HomeTabs = createBottomTabNavigator(
   {
@@ -51,6 +52,7 @@ const routes = createStackNavigator(
   {
     Home: HomeTabs,
     ViewRelease,
+    ViewSeries,
   },
   {
     headerLayoutPreset: 'center',

@@ -24,7 +24,19 @@ const getReleaseById = async id => {
   return null;
 };
 
+const getSeriesById = async id => {
+  try {
+    const response = await fetch(BaseURL + `anime/${id}`);
+    const data = await response.json();
+    return data.result;
+  } catch (error) {
+    console.log(error);
+  }
+  return null;
+};
+
 export default {
   getLatest,
   getReleaseById,
+  getSeriesById,
 };

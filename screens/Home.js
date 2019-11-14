@@ -152,12 +152,20 @@ class Home extends Component {
     ];
 
     return (
-      <CardItem
-        image={item.image}
-        title={item.name}
-        style={style}
-        height={200}
-      />
+      <TouchableOpacity
+        onPress={() =>
+          this.props.navigation.navigate('ViewSeries', {
+            title: item.name,
+            id: item.id,
+          })
+        }>
+        <CardItem
+          image={item.image}
+          title={item.name}
+          style={style}
+          height={200}
+        />
+      </TouchableOpacity>
     );
   }
 
